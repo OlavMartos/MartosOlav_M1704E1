@@ -31,11 +31,12 @@ public class GameManager : MonoBehaviour
         InstantiateToken(token2, objectivePos);
         ShowMatrix();
     }
+
     private void InstantiateToken(GameObject token, int[] position)
     {
-        Instantiate(token, Calculator.GetPositionFromMatrix(position),
-            Quaternion.identity);
+        Instantiate(token, Calculator.GetPositionFromMatrix(position), Quaternion.identity);
     }
+
     private void SetObjectivePoint(int[] startPos) 
     {
         var rand1 = Random.Range(0, Calculator.length);
@@ -66,9 +67,10 @@ public class GameManager : MonoBehaviour
     {
         if(!EvaluateWin())
         {
-
+            ;
         }
     }
+
     private bool EvaluateWin()
     {
         return false;
