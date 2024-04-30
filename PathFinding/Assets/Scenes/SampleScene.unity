@@ -328,9 +328,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bbdd5979e397f8419fee55595fe4ed4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  token1: {fileID: 7115763792773828592, guid: bbaa75e33fb6fbb45b29227b26d8b0fc, type: 3}
-  token2: {fileID: 813370367208522585, guid: 77804ab7821fd8648b309374d39a980c, type: 3}
-  token3: {fileID: 6080297049774802956, guid: 642914e007dea67468b6add374813c0f, type: 3}
+  player: {fileID: 7115763792773828592, guid: bbaa75e33fb6fbb45b29227b26d8b0fc, type: 3}
+  target: {fileID: 813370367208522585, guid: 77804ab7821fd8648b309374d39a980c, type: 3}
+  path: {fileID: 6080297049774802956, guid: 642914e007dea67468b6add374813c0f, type: 3}
+  correctPath: {fileID: 6080297049774802956, guid: d768cf4df7ada1c449292141494817c8, type: 3}
+  win: 0
+  openList: []
+  closedList: []
+  startNode:
+    position: 
+    heuristic: 0
+    gCost: 0
+    fCost: 0
+    neighbors: []
+  endNode:
+    position: 
+    heuristic: 0
+    gCost: 0
+    fCost: 0
+    neighbors: []
 --- !u!4 &1072300322
 Transform:
   m_ObjectHideFlags: 0

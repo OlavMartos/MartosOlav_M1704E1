@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject token1, token2, token3;
+    public GameObject player, target, path, correctPath;
     private int[,] GameMatrix;                              // 0 not chosen, 1 player, 2 objective
     private int[] startPos = new int[2];
     private int[] objectivePos = new int[2];
@@ -36,8 +36,8 @@ public class GameManager : MonoBehaviour
 
 
         // Instantiate elements in screen
-        InstantiateToken(token1, startPos);
-        InstantiateToken(token2, objectivePos);
+        InstantiateToken(player, startPos);
+        InstantiateToken(target, objectivePos);
         ShowMatrix();
 
         // Create nodes
@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviour
     {
         if(!EvaluateWin())
         {
-            
+            if(openList.Count > 0) { }
         }
     }
 

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
 
 [System.Serializable]
@@ -12,11 +11,11 @@ public class Node
     public List<Node> neighbors;
     public Node parentNode;
 
-    public Node(int[] pos, int[] target, Node root)
+    public Node(int[] pos, int[] target, Node parent)
     {
         position = pos;
-        heuristic = Calculator.CheckDistanceToObj(pos, target);
-        if(root != null) gCost = Calculator.CheckDistanceToObj(pos, root.position);
+        heuristic = Mathf.Round(Calculator.CheckDistanceToObj(pos, target));
+        if(parent != null) gCost = Mathf.Round(Calculator.CheckDistanceToObj(pos, parent.position));
     }
 
     public void AddNeighbour(List<Node> neighbors)
