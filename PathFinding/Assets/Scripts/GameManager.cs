@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
             for (int j = 0; j < Calculator.length; j++)     // Column
                 GameMatrix[i, j] = 0;
 
-        // Randomitzar pos final i inicial;
+        // Randomize startPos & finalPos
         var rand1 = Random.Range(0, Calculator.length);
         var rand2 = Random.Range(0, Calculator.length);
         startPos[0] = rand1;
@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviour
     {
         if(!EvaluateWin())
         {
-
+            
         }
     }
 
