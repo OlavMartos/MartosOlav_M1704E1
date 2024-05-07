@@ -46,7 +46,24 @@ public static class NodePath
         int i = nodes.Count - 1;
         int sum = 1;
 
-        // Neighbour Up
+        // Check neighbour
+        sum = CheckUp(currentNode, i, sum);
+        sum = CheckDown(currentNode, i, sum);
+        sum = CheckRight(currentNode, i, sum);
+        sum = CheckLeft(currentNode, i, sum);
+
+        Queue<Node> nodesLocalOrden = Order(nodesLocal);
+        return nodesLocalOrden;
+    }
+
+    public static void InstanceToken(int[] pos, int i, int sum)
+    {
+        GameManager.Instance.InstantiateToken(GameManager.Instance.path, pos);
+        nodesLocal.Enqueue(nodes[i + sum]);
+    }
+
+    public static int CheckUp(Node currentNode, int i, int sum)
+    {
         if (currentNode.position[0] + 1 < Calculator.length)
         {
             int[] pos = new int[2];
@@ -59,7 +76,11 @@ public static class NodePath
             }
         }
 
-        // Neighbour Down
+        return sum;
+    }
+
+    public static int CheckDown(Node currentNode, int i, int sum)
+    {
         if (currentNode.position[0] - 1 >= 0)
         {
             int[] pos = new int[2];
@@ -72,7 +93,11 @@ public static class NodePath
             }
         }
 
-        // Neighbour Right
+        return sum;
+    }
+
+    public static int CheckRight(Node currentNode, int i, int sum)
+    {
         if (currentNode.position[1] + 1 < Calculator.length)
         {
             int[] pos = new int[2];
@@ -85,7 +110,11 @@ public static class NodePath
             }
         }
 
-        // Neighbour Left
+        return sum;
+    }
+
+    public static int CheckLeft(Node currentNode, int i, int sum)
+    {
         if (currentNode.position[1] - 1 >= 0)
         {
             int[] pos = new int[2];
@@ -96,14 +125,8 @@ public static class NodePath
                 InstanceToken(pos, i, sum);
             }
         }
-        Queue<Node> nodesLocalOrden = Order(nodesLocal);
-        return nodesLocalOrden;
-    }
 
-    public static void InstanceToken(int[] pos, int i, int sum)
-    {
-        GameManager.Instance.InstantiateToken(GameManager.Instance.path, pos);
-        nodesLocal.Enqueue(nodes[i + sum]);
+        return sum;
     }
 
     public static bool CheckIfPosExist(int[] pos)
