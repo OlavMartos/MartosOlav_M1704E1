@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 
 public static class NodePath
 {
     public static List<Node> nodes = new();
     private static bool end = false;
+    public static Queue<Node> nodesLocal = new();
+
     public static void FindSelectableNode()
     {
         Queue<Node> openList = new();
@@ -38,7 +41,7 @@ public static class NodePath
     }
     public static Queue<Node> FindAdjentNode(Node currentNode)
     {
-        Queue<Node> nodesLocal = new();
+        nodesLocal.Clear();
 
         int i = nodes.Count - 1;
         int sum = 1;
@@ -51,8 +54,7 @@ public static class NodePath
             pos[1] = currentNode.position[1];
             if (!CheckIfPosExist(pos))
             {
-                GameManager.Instance.InstantiateToken(GameManager.Instance.path, pos);
-                nodesLocal.Enqueue(nodes[i + sum]);
+                InstanceToken(pos, i, sum);
                 sum++;
             }
         }
@@ -65,8 +67,7 @@ public static class NodePath
             pos[1] = currentNode.position[1];
             if (!CheckIfPosExist(pos))
             {
-                GameManager.Instance.InstantiateToken(GameManager.Instance.path, pos);
-                nodesLocal.Enqueue(nodes[i + sum]);
+                InstanceToken(pos, i, sum);
                 sum++;
             }
         }
@@ -79,8 +80,7 @@ public static class NodePath
             pos[1] = currentNode.position[1] + 1;
             if (!CheckIfPosExist(pos))
             {
-                GameManager.Instance.InstantiateToken(GameManager.Instance.path, pos);
-                nodesLocal.Enqueue(nodes[i + sum]);
+                InstanceToken(pos, i, sum);
                 sum++;
             }
         }
@@ -93,12 +93,17 @@ public static class NodePath
             pos[1] = currentNode.position[1] - 1;
             if (!CheckIfPosExist(pos))
             {
-                GameManager.Instance.InstantiateToken(GameManager.Instance.path, pos);
-                nodesLocal.Enqueue(nodes[i + sum]);
+                InstanceToken(pos, i, sum);
             }
         }
         Queue<Node> nodesLocalOrden = Order(nodesLocal);
         return nodesLocalOrden;
+    }
+
+    public static void InstanceToken(int[] pos, int i, int sum)
+    {
+        GameManager.Instance.InstantiateToken(GameManager.Instance.path, pos);
+        nodesLocal.Enqueue(nodes[i + sum]);
     }
 
     public static bool CheckIfPosExist(int[] pos)
