@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public static class NodePath
 {
@@ -14,44 +16,45 @@ public static class NodePath
         nodes[0].alredyChecked = true;
         while (openList.Count > 0)
         {
-            Queue<Node> oreden = Order(openList);
+            Queue<Node> listSort = Sort(openList);
             openList.Clear();
-            openList = oreden;
-            Node nodeAct = openList.Dequeue();
-            Queue<Node> list = FindAdjentNode(nodeAct);
+            openList = listSort;
+            Node currentNode = openList.Dequeue();
+            Queue<Node> list = FindAdjentNode(currentNode);
 
-            foreach (Node currentNode in list)
-            {
-                if (!currentNode.alredyChecked)
-                {
-                    currentNode.nodeFather = nodeAct;
-                    currentNode.alredyChecked = true;
-                    openList.Enqueue(currentNode);
-                    if (currentNode.distance == 0)
-                    {
-                        Win(currentNode);
-                        end = true;
-                        break;
-                    }
-                }
-            }
+            CheckWin(currentNode, list, openList);
             if (end) break;
         }
     }
+
+    public static void CheckWin(Node currentNode, Queue<Node> list, Queue<Node> openList)
+    {
+        foreach (Node node in list)
+        {
+            if (!node.alredyChecked)
+            {
+                node.nodeFather = currentNode;
+                node.alredyChecked = true;
+                openList.Enqueue(node);
+                if (node.distance == 0)
+                {
+                    GameManager.Instance.StartCoroutine(Win(node));
+                    end = true;
+                    break;
+                }
+            }
+        }
+    }
+
     public static Queue<Node> FindAdjentNode(Node currentNode)
     {
         nodesLocal.Clear();
 
         int i = nodes.Count - 1;
         int sum = 1;
+        CheckNeighbors(currentNode, i, sum);
 
-        // Check neighbour
-        sum = CheckUp(currentNode, i, sum);
-        sum = CheckDown(currentNode, i, sum);
-        sum = CheckRight(currentNode, i, sum);
-        CheckLeft(currentNode, i, sum);
-
-        Queue<Node> nodesLocalOrden = Order(nodesLocal);
+        Queue<Node> nodesLocalOrden = Sort(nodesLocal);
         return nodesLocalOrden;
     }
 
@@ -59,80 +62,6 @@ public static class NodePath
     {
         GameManager.Instance.InstantiateToken(GameManager.Instance.path, pos);
         nodesLocal.Enqueue(nodes[i + sum]);
-    }
-
-    /// <summary>
-    /// Check neighbour up
-    /// </summary>
-    public static int CheckUp(Node currentNode, int i, int sum)
-    {
-        if (currentNode.position[0] + 1 < Calculator.length)
-        {
-            int[] pos = new int[2];
-            pos[0] = currentNode.position[0] + 1;
-            pos[1] = currentNode.position[1];
-            if (!CheckIfPosExist(pos))
-            {
-                InstanceToken(pos, i, sum);
-                sum++;
-            }
-        }
-
-        return sum;
-    }
-
-    /// <summary>
-    /// Check neighbour down
-    /// </summary>
-    public static int CheckDown(Node currentNode, int i, int sum)
-    {
-        if (currentNode.position[0] - 1 >= 0)
-        {
-            int[] pos = new int[2];
-            pos[0] = currentNode.position[0] - 1;
-            pos[1] = currentNode.position[1];
-            if (!CheckIfPosExist(pos))
-            {
-                InstanceToken(pos, i, sum);
-                sum++;
-            }
-        }
-
-        return sum;
-    }
-
-    /// <summary>
-    /// Check neighbour right
-    /// </summary>
-    public static int CheckRight(Node currentNode, int i, int sum)
-    {
-        if (currentNode.position[1] + 1 < Calculator.length)
-        {
-            int[] pos = new int[2];
-            pos[0] = currentNode.position[0];
-            pos[1] = currentNode.position[1] + 1;
-            if (!CheckIfPosExist(pos))
-            {
-                InstanceToken(pos, i, sum);
-                sum++;
-            }
-        }
-
-        return sum;
-    }
-
-    /// <summary>
-    /// Check neighbour left
-    /// </summary>
-    public static void CheckLeft(Node currentNode, int i, int sum)
-    {
-        if (currentNode.position[1] - 1 >= 0)
-        {
-            int[] pos = new int[2];
-            pos[0] = currentNode.position[0];
-            pos[1] = currentNode.position[1] - 1;
-            if (!CheckIfPosExist(pos)) InstanceToken(pos, i, sum);
-        }
     }
 
     public static bool CheckIfPosExist(int[] pos)
@@ -145,7 +74,7 @@ public static class NodePath
         return exists;
     }
 
-    public static Queue<Node> Order(Queue<Node> proses)
+    public static Queue<Node> Sort(Queue<Node> proses)
     {
         IEnumerable<Node> query = proses.OrderBy(node => node.distance);
         Queue<Node> prosesOrdn = new();
@@ -154,10 +83,22 @@ public static class NodePath
         return prosesOrdn;
 
     }
-    public static void Win(Node node)
+    public static IEnumerator Win(Node node)
     {
         GameManager.Instance.InstantiateToken(GameManager.Instance.correctPath, node.position);
-        if (node.nodeFather != null) Win(node.nodeFather);
+
+        // If you want activated this extra, go to the GameManager in the Unity Inspector
+        if (node.nodeFather == null && GameManager.Instance.screamerEnable) GameManager.Instance.Screamer();  
+        yield return new WaitForSeconds(0.25f);
+        if (node.nodeFather != null) GameManager.Instance.StartCoroutine(Win(node.nodeFather));
+    }
+
+    public static void CheckNeighbors(Node currentNode, int i, int sum)
+    {
+        sum = NodeNeighbour.CheckUp(currentNode, i, sum);
+        sum = NodeNeighbour.CheckDown(currentNode, i, sum);
+        sum = NodeNeighbour.CheckRight(currentNode, i, sum);
+        NodeNeighbour.CheckLeft(currentNode, i, sum);
     }
 }
 

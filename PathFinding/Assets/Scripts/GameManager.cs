@@ -1,4 +1,7 @@
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 public class GameManager : MonoBehaviour
 {
@@ -6,7 +9,9 @@ public class GameManager : MonoBehaviour
     public GameObject player, target, path, correctPath;
     private int[,] GameMatrix;                              // 0 not chosen, 1 player, 2 objective
     private int[] startPos = new int[2];
-    private int[] objectivePos = new int[2];
+    public int[] objectivePos = new int[2];
+    public VideoPlayer videoClip;
+    public bool screamerEnable;
 
     private void Awake()
     {
@@ -86,7 +91,7 @@ public class GameManager : MonoBehaviour
             }
             matrix += "\n";
         }
-        Debug.Log(matrix);
+        //Debug.Log(matrix);
     }
 
 
@@ -102,5 +107,10 @@ public class GameManager : MonoBehaviour
     private bool EvaluateWin()
     {
         return false;
+    }
+
+    public void Screamer()
+    {
+        videoClip.Play();
     }
 }
