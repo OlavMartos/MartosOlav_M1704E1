@@ -1,7 +1,5 @@
-using UnityEditor.SearchService;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Video;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,13 +8,23 @@ public class GameManager : MonoBehaviour
     private int[,] GameMatrix;                              // 0 not chosen, 1 player, 2 objective
     private int[] startPos = new int[2];
     public int[] objectivePos = new int[2];
-    public VideoPlayer videoClip;
-    public bool screamerEnable;
+    private List<GameObject> objects = new List<GameObject>();
+
+    [Header("Win")]
+    public bool win;
+    public GameObject reset;
 
     private void Awake()
     {
         Instance = this;
+        NewGame();
+    }
+
+    private void NewGame()
+    {
         GameMatrix = new int[Calculator.length, Calculator.length];
+
+        reset.SetActive(false);
 
         for (int i = 0; i < Calculator.length; i++) //fila
             for (int j = 0; j < Calculator.length; j++) //columna
@@ -58,6 +66,8 @@ public class GameManager : MonoBehaviour
             node.alredyChecked = false;
             NodePath.nodes.Add(node);
         }
+
+        objects.Add(obj);
     }
 
 
@@ -91,26 +101,30 @@ public class GameManager : MonoBehaviour
             }
             matrix += "\n";
         }
-        //Debug.Log(matrix);
+        Debug.Log(matrix);
     }
 
 
     // EL VOSTRE EXERCICI COMENÇA AQUI
     private void Update()
     {
-        if(!EvaluateWin())
-        {
+        if(EvaluateWin())
+            reset.SetActive(true);
 
+        if(reset.activeSelf && Input.GetKey(KeyCode.R))
+        {
+            foreach(var obj in objects) 
+                Destroy(obj);
+
+            NodePath.Reset();
+            reset.SetActive(false);
+            win = false;
+            NewGame();
         }
     }
 
     private bool EvaluateWin()
     {
-        return false;
-    }
-
-    public void Screamer()
-    {
-        videoClip.Play();
+        return win;
     }
 }

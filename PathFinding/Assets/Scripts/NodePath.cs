@@ -9,6 +9,13 @@ public static class NodePath
     private static bool end = false;
     public static Queue<Node> nodesLocal = new();
 
+    public static void Reset()
+    {
+        nodes = new();
+        end = false;
+        nodesLocal = new();
+    }
+
     public static void FindSelectableNode()
     {
         Queue<Node> openList = new();
@@ -86,11 +93,9 @@ public static class NodePath
     public static IEnumerator Win(Node node)
     {
         GameManager.Instance.InstantiateToken(GameManager.Instance.correctPath, node.position);
-
-        // If you want activated this extra, go to the GameManager in the Unity Inspector
-        if (node.nodeFather == null && GameManager.Instance.screamerEnable) GameManager.Instance.Screamer();  
         yield return new WaitForSeconds(0.25f);
         if (node.nodeFather != null) GameManager.Instance.StartCoroutine(Win(node.nodeFather));
+        else GameManager.Instance.win = true;
     }
 
     public static void CheckNeighbors(Node currentNode, int i, int sum)
